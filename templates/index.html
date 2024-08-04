@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+<title>getUserMedia</title>
+
+  <style>
+    video {
+      object-fit: cover;
+    }
+
+    @media (min-width: 1000px) {
+      video {
+        height: 480px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="container">
+    <video autoplay playsinline></video>
+	<canvas id="canvas" style="display: none;"></canvas>
+
+  </div>
+
+  <script src="../static/js/main.js"></script>
+
+</body>
+</html>

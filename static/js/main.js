@@ -1,18 +1,18 @@
 'use strict';
 
 // Global variables
-let video;
-let canvas;
-let context;
-let frameData;
+let video = document.querySelector('video');
+let videoSelect = document.querySelector('select#videoSource');
+let canvas = document.getElementById('canvas');
+let context = canvas.getContext('2d');
+let frameData = null;
 let stream;
 
 // Setup function
 function setup() {
-  video = document.querySelector('video');
-  canvas = document.getElementById('canvas');
-  context = canvas.getContext('2d');
-  frameData = null;
+  //global variable settings
+  videoSelect.onchange = getStream;
+  getStream().then(getDevices).then(gotDevices);
 
   // Set up media constraints
   const constraints = {
@@ -58,6 +58,40 @@ function processVideo() {
     console.log(frameData); // Contains raw pixel data
   }
 }
+function getDevices() {
+  return navigator.mediaDevices.enumerateDevices();
+}
+function gotDevices(deviceInfos) {
+  window.deviceInfos = deviceInfos; // make available to console
+  console.log('Available input and output devices:', deviceInfos);
+  for (const deviceInfo of deviceInfos) {
+    if (deviceInfo.kind === 'videoinput') {
+      const option = document.createElement('option');
+      option.value = deviceInfo.deviceId;
+      option.text = deviceInfo.label || `Camera ${videoSelect.length + 1}`;
+      videoSelect.appendChild(option);
+    }
+  }
+}
+function getStream() {
+  if (window.stream) {
+    window.stream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
+  const videoSource = videoSelect.value;
+  const constraints = {
+    video: {deviceId: videoSource ? {exact: videoSource} : undefined}
+  };
+  return navigator.mediaDevices.getUserMedia(constraints)
+    .then(gotStream).catch(handleError);
+}
 
+function gotStream(stream) {
+  window.stream = stream; // make stream available to console
+  videoSelect.selectedIndex = [...videoSelect.options]
+    .findIndex(option => option.text === stream.getVideoTracks()[0].label);
+  videoElement.srcObject = stream;
+}
 // Call setup to initialize
 setup();

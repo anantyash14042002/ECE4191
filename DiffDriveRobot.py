@@ -19,11 +19,25 @@ class DiffDriveRobot:
         self.r = wheel_radius
         self.l = wheel_sep
 
-    def base_velocity(self):
-        pass
+    def base_velocity(self, wl, wr):
+        v = (wl*self.r + wr*self.r)/2.0
+        w = (wl - wr)/self.l
+        
+        return v, w
 
-    def update_pose(self):
-        pass
+    def update_pose(self, duty_cycle_l, duty_cycle_r):
+
+        # Get rotational velocity of each wheel from encoder
+        # self.wl = None
+        # self.wr = None
+        
+        v, w = self.base_velocity(self.wl,self.wr)
+        
+        self.x = self.x + self.dt*v*np.cos(self.th)
+        self.y = self.y + self.dt*v*np.sin(self.th)
+        self.th = self.th + w*self.dt
+        
+        return self.x, self.y, self.th
 
 
 # Implement a PI controller 

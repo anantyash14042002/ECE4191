@@ -39,11 +39,11 @@ GPIO.setup(ebL, GPIO.IN)
 # Setup a GPIO pin as Output
 #   Motor Control xxxx Side
 #       Enable
-GPIO.setup(31, GPIO.OUT)
-GPIO.setup(33, GPIO.OUT)
+GPIO.setup(enaR, GPIO.OUT)
+GPIO.setup(enbR, GPIO.OUT)
 #       PWM
-GPIO.setup(35, GPIO.OUT)
-GPIO.setup(37, GPIO.OUT)
+GPIO.setup(paR, GPIO.OUT)
+GPIO.setup(pbR, GPIO.OUT)
 
 #   Motor Control xxxx Side
 #       Enable

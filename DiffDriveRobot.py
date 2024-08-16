@@ -26,12 +26,22 @@ class DiffDriveRobot:
         pass
 
 
+# Implement a PI controller 
 class Controller:
     
     ## Play around with gain values
-    def __init__(self, Kp = 0.1, Ki = 0.01):
+    def __init__(self, Kp = 0.1, Ki = 0.01, wheel_radius = 0.05, wheel_sep = 0.15):
         self.Kp = Kp
         self.Ki = Ki
 
-    def p_control(self):
+
+        self.r = wheel_radius
+        self.l = wheel_sep
+
+        # Initialise error term for integral control
+        self.e_l = 0.0      # Left wheel
+        self.e_r = 0.0      # Right wheel
+
+
+    def generate_control(self):
         pass

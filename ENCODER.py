@@ -10,10 +10,10 @@ eaL = 16
 ebL = 18
 
 # Enable + PWM :  Right Side
-enaR = 31
-enbR = 33
+enaR = 11
+enbR = 13
 
-paR = 35
+paR = 15
 pbR = 37
 
 # Enable + PWM :  Right Side

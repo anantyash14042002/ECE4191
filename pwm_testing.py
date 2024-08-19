@@ -17,10 +17,10 @@ GPIO.setup(in4_pin, GPIO.OUT)
 
 # Set up PWM
 frequency = 15000
-IN1 = GPIO.PWM(in1_pin, frequency)
-IN2 = GPIO.PWM(in2_pin, frequency)
-IN3 = GPIO.PWM(in3_pin, frequency)
-IN4 = GPIO.PWM(in4_pin, frequency)
+pwm_IN1 = GPIO.PWM(in1_pin, frequency)
+pwm_IN2 = GPIO.PWM(in2_pin, frequency)
+pwm_IN3 = GPIO.PWM(in3_pin, frequency)
+pwm_IN4 = GPIO.PWM(in4_pin, frequency)
 
 # Start PWM with a duty cycle of 0% (off) for all pins
 pwm_IN1.start(0)

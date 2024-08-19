@@ -2,9 +2,9 @@ import RPi.GPIO as GPIO
 
 # define pins
 in1_pin = 12
-in2_pin = 32
-in3_pin = 33
-in4_pin = 35
+in2_pin = 13
+in3_pin = 18
+in4_pin = 19
 
 # Set the GPIO mode to use physical pin numbers
 GPIO.setmode(GPIO.BOARD)

@@ -76,7 +76,7 @@ def change_speed():
             continue
 
         # Sleep to reduce CPU usage
-        time.sleep(0.1)
+        time.sleep(2)
 
 # Function to handle encoder measurement
 def measure_encoders():

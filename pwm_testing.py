@@ -55,7 +55,7 @@ try:
             print("Invalid input \n")
 
 except KeyboardInterrupt:
-    pass
+    print("hello\n")
 
 finally:
     # Stop PWM and clean up GPIO settings

@@ -48,39 +48,37 @@ right_velocity = 0
 
 # Function to handle motor speed changes
 def change_speed():
-    global left_velocity, right_velocity
     while True:
+        user_input = input("Enter wheel velocities as 'left right' [-1, 1]: ")
         try:
-            left_velocity = float(input("Enter left wheel velocity [-1, 1]: "))
-            if not -1 <= left_velocity <= 1:
+            left_velocity, right_velocity = map(float, user_input.split())
+            
+            # Control left motor
+            if -1 <= left_velocity <= 0:  # Backward
+                pwm_IN1.ChangeDutyCycle(0)
+                pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
+            elif 0 < left_velocity <= 1:  # Forward
+                pwm_IN1.ChangeDutyCycle(left_velocity * 100)
+                pwm_IN2.ChangeDutyCycle(0)
+            else:
                 print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
                 continue
-
-            right_velocity = float(input("Enter right wheel velocity [-1, 1]: "))
-            if not -1 <= right_velocity <= 1:
+            
+            # Control right motor
+            if -1 <= right_velocity <= 0:  # Backward
+                pwm_IN3.ChangeDutyCycle(0)
+                pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
+            elif 0 < right_velocity <= 1:  # Forward
+                pwm_IN3.ChangeDutyCycle(right_velocity * 100)
+                pwm_IN4.ChangeDutyCycle(0)
+            else:
                 print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
                 continue
 
-            # Control left motor
-            if left_velocity <= 0:  # Backward
-                pwm_IN1.ChangeDutyCycle(0)
-                pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
-            else:  # Forward
-                pwm_IN1.ChangeDutyCycle(left_velocity * 100)
-                pwm_IN2.ChangeDutyCycle(0)
-
-            # Control right motor
-            if right_velocity <= 0:  # Backward
-                pwm_IN3.ChangeDutyCycle(0)
-                pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
-            else:  # Forward
-                pwm_IN3.ChangeDutyCycle(right_velocity * 100)
-                pwm_IN4.ChangeDutyCycle(0)
-        
         except ValueError:
-            print("Invalid input. Please enter a number between -1 and 1.")
+            print("Invalid input format. Please enter two numeric values separated by a space.")
             continue
-
+            
 # Start the speed-changing thread
 speed_thread = threading.Thread(target=change_speed)
 speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
@@ -89,7 +87,6 @@ speed_thread.start()
 try:
     while True:
         # Encoder reading and distance calculation
-        time.sleep(0.1)
         distL, distR = 0, 0
         prev_enLA = GPIO.input(enLA_pin)
         prev_enLB = GPIO.input(enLB_pin)

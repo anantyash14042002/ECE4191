@@ -1,14 +1,16 @@
 import RPi.GPIO as GPIO
+import time
 
 # define pins
 in1_pin = 12
 in2_pin = 13
 in3_pin = 18
 in4_pin = 19
-#enLA_pin = 36
-#enLB_pin = 38
-#enRA_pin = 35
-#enRB_pin = 37
+
+enLA_pin = 36
+enLB_pin = 38
+enRA_pin = 35
+enRB_pin = 37
 
 # Set the GPIO mode to use physical pin numbers
 GPIO.setmode(GPIO.BOARD)
@@ -19,6 +21,10 @@ GPIO.setup(in2_pin, GPIO.OUT)
 GPIO.setup(in3_pin, GPIO.OUT)
 GPIO.setup(in4_pin, GPIO.OUT)
 
+GPIO.setup(enLA_pin, GPIO.IN)
+GPIO.setup(enLB_pin, GPIO.IN)
+GPIO.setup(enRA_pin, GPIO.IN)
+GPIO.setup(enRB_pin, GPIO.IN)
 # Set up PWM
 frequency = 15000
 pwm_IN1 = GPIO.PWM(in1_pin, frequency)
@@ -56,6 +62,7 @@ try:
             print("Invalid input \n")
 
 except KeyboardInterrupt:
+    print("Hello\n")
     pass
 
 finally:

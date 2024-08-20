@@ -8,7 +8,7 @@ in3_pin = 18
 in4_pin = 19
 
 # Define encoder pins
-enLA_pin = 36
+enLA_pin = 36 # hardware not working
 enLB_pin = 38
 enRA_pin = 35
 enRB_pin = 37
@@ -94,7 +94,7 @@ try:
             
             # Count right encoder transitions
             if enRA != prev_enRA and enRA == GPIO.HIGH:
-                distR += 1
+                #distR += 1
             prev_enRA = enRA
             
             if enRB != prev_enRB and enRB == GPIO.HIGH:

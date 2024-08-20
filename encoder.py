@@ -57,26 +57,11 @@ try:
             prev_enRB = enRB
             
             time.sleep(0.0001)  # Short delay to avoid excessive CPU usage
+        print("Right :",right_count)
+        print("\n")
+        print("Left :", left_count)
+        print("\n")
         
-        # Determine left wheel direction
-        left_speed = left_count
-        if prev_enLA == GPIO.HIGH and prev_enLB == GPIO.LOW:
-            left_direction = "Forward"
-        else:
-            left_direction = "Backward"
-        
-        # Determine right wheel direction
-        right_speed = right_count
-        if prev_enRA == GPIO.HIGH and prev_enRB == GPIO.LOW:
-            right_direction = "Forward"
-        else:
-            right_direction = "Backward"
-        
-        # Print out the speed and direction
-        print(f"Left Wheel: Speed = {left_speed}, Direction = {left_direction}")
-        print(f"Right Wheel: Speed = {right_speed}, Direction = {right_direction}")
-        print("")
-
 except KeyboardInterrupt:
     pass
 

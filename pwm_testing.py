@@ -5,7 +5,10 @@ in1_pin = 12
 in2_pin = 13
 in3_pin = 18
 in4_pin = 19
-
+enLA_pin = 36
+enLB_pin = 38
+enRA_pin = 35
+enRB_pin = 37
 # Set the GPIO mode to use physical pin numbers
 GPIO.setmode(GPIO.BOARD)
 
@@ -29,28 +32,27 @@ pwm_IN3.start(0)
 pwm_IN4.start(0)
 
 try:
-    while True:
-        # Get user input for each pin's brightness level (0 to 1)
-        brightness_in1 = float(input("Enter brightness level for IN1 (0 to 1): "))
-        brightness_in2 = float(input("Enter brightness level for IN2 (0 to 1): "))
-        brightness_in3 = float(input("Enter brightness level for IN3 (0 to 1): "))
-        brightness_in4 = float(input("Enter brightness level for IN4 (0 to 1): "))
+    while True: 
+        left_velocity = float(input("Enter left wheel velocity [-1,1]"))
+        if( -1 <= left_velocity <= 0): # backwards
+            pwm_IN1.ChangeDutyCycle(0)
+            pwm_IN2.ChangeDutyCycle(abs(left_velocity))
+        else if(left_velocity <= 1):
+            pwm_IN1.ChangeDutyCycle(left_velocity)
+            pwm_IN2.ChangeDutyCycle(0)
+        else : 
+            print("Invalid input \n")
+            
 
-        # Ensure inputs are within the valid range
-        if all(0 <= b <= 1 for b in [brightness_in1, brightness_in2, brightness_in3, brightness_in4]):
-            # Convert inputs to duty cycle percentages (0 to 100)
-            duty_cycle_in1 = brightness_in1 * 100
-            duty_cycle_in2 = brightness_in2 * 100
-            duty_cycle_in3 = brightness_in3 * 100
-            duty_cycle_in4 = brightness_in4 * 100
-
-            # Set the PWM duty cycle for each pin
-            pwm_IN1.ChangeDutyCycle(duty_cycle_in1)
-            pwm_IN2.ChangeDutyCycle(duty_cycle_in2)
-            pwm_IN3.ChangeDutyCycle(duty_cycle_in3)
-            pwm_IN4.ChangeDutyCycle(duty_cycle_in4)
-        else:
-            print("Please enter values between 0 and 1 for all inputs.")
+        right_velocity = float(input("Enter right velocity velocity [-1,1]"))
+        if( -1 <= right_velocity <= 0): # backwards
+            pwm_IN3.ChangeDutyCycle(0)
+            pwm_IN4.ChangeDutyCycle(abs(right_velocity))
+        else if(right_velocity <= 1):
+            pwm_IN3.ChangeDutyCycle(right_velocity)
+            pwm_IN4.ChangeDutyCycle(0)
+        else : 
+            print("Invalid input \n")
 
 except KeyboardInterrupt:
     pass

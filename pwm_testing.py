@@ -37,9 +37,9 @@ try:
         left_velocity = float(input("Enter left wheel velocity [-1,1]"))
         if( -1 <= left_velocity <= 0): # backwards
             pwm_IN1.ChangeDutyCycle(0)
-            pwm_IN2.ChangeDutyCycle(abs(left_velocity))
+            pwm_IN2.ChangeDutyCycle(abs(left_velocity)*100)
         elif(left_velocity <= 1):
-            pwm_IN1.ChangeDutyCycle(left_velocity)
+            pwm_IN1.ChangeDutyCycle(left_velocity*100)
             pwm_IN2.ChangeDutyCycle(0)
         else : 
             print("Invalid input \n")
@@ -48,15 +48,15 @@ try:
         right_velocity = float(input("Enter right velocity velocity [-1,1]"))
         if( -1 <= right_velocity <= 0): # backwards
             pwm_IN3.ChangeDutyCycle(0)
-            pwm_IN4.ChangeDutyCycle(abs(right_velocity))
+            pwm_IN4.ChangeDutyCycle(abs(right_velocity)*100)
         elif(right_velocity <= 1):
-            pwm_IN3.ChangeDutyCycle(right_velocity)
+            pwm_IN3.ChangeDutyCycle(right_velocity*100)
             pwm_IN4.ChangeDutyCycle(0)
         else : 
             print("Invalid input \n")
 
 except KeyboardInterrupt:
-    print("hello\n")
+    pass
 
 finally:
     # Stop PWM and clean up GPIO settings

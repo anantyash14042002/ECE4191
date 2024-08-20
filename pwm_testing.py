@@ -94,7 +94,7 @@ try:
         prev_enRB = GPIO.input(enRB_pin)
         initial_time = time.time()
         
-        while (time.time() - initial_time) < 1:  # 1s loop
+        while (time.time() - initial_time) < 0.05:  # 50ms loop
             enLA = GPIO.input(enLA_pin)
             enLB = GPIO.input(enLB_pin)
             enRA = GPIO.input(enRA_pin)

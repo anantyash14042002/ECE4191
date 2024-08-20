@@ -94,7 +94,7 @@ try:
             
             # Count right encoder transitions
             if enRA != prev_enRA and enRA == GPIO.HIGH:
-                #distR += 1
+                distR += 1
             prev_enRA = enRA
             
             if enRB != prev_enRB and enRB == GPIO.HIGH:
@@ -105,7 +105,7 @@ try:
             time.sleep(0.0001)  # 0.1ms delay
         
         # Output encoder readings
-        print(f"Left Wheel Count: {distL}")
+        print(f"Left Wheel Count: {distL*2}")
         print(f"Right Wheel Count: {distR}\n")
 
 except KeyboardInterrupt:

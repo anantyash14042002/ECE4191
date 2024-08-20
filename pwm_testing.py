@@ -5,10 +5,11 @@ in1_pin = 12
 in2_pin = 13
 in3_pin = 18
 in4_pin = 19
-enLA_pin = 36
-enLB_pin = 38
-enRA_pin = 35
-enRB_pin = 37
+#enLA_pin = 36
+#enLB_pin = 38
+#enRA_pin = 35
+#enRB_pin = 37
+
 # Set the GPIO mode to use physical pin numbers
 GPIO.setmode(GPIO.BOARD)
 
@@ -37,7 +38,7 @@ try:
         if( -1 <= left_velocity <= 0): # backwards
             pwm_IN1.ChangeDutyCycle(0)
             pwm_IN2.ChangeDutyCycle(abs(left_velocity))
-        else if(left_velocity <= 1):
+        elif(left_velocity <= 1):
             pwm_IN1.ChangeDutyCycle(left_velocity)
             pwm_IN2.ChangeDutyCycle(0)
         else : 
@@ -48,7 +49,7 @@ try:
         if( -1 <= right_velocity <= 0): # backwards
             pwm_IN3.ChangeDutyCycle(0)
             pwm_IN4.ChangeDutyCycle(abs(right_velocity))
-        else if(right_velocity <= 1):
+        elif(right_velocity <= 1):
             pwm_IN3.ChangeDutyCycle(right_velocity)
             pwm_IN4.ChangeDutyCycle(0)
         else : 

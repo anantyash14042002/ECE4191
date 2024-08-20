@@ -77,7 +77,7 @@ try:
         prev_enRB = GPIO.input(enRB_pin)
         initial_time = time.time()
         
-        while (time.time() - initial_time) < 0.05:  # 50ms loop
+        while (time.time() - initial_time) < 1:  # 1s loop
             enLA = GPIO.input(enLA_pin)
             enLB = GPIO.input(enLB_pin)
             enRA = GPIO.input(enRA_pin)
@@ -102,7 +102,7 @@ try:
             prev_enRB = enRB
             
             # Small delay to avoid excessive CPU usage
-            time.sleep(0.001)  # 1ms delay
+            time.sleep(0.0001)  # 0.1ms delay
         
         # Output encoder readings
         print(f"Left Wheel Count: {distL}")

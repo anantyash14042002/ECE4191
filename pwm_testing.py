@@ -1,8 +1,8 @@
+ange_speed function does not block indefinitely if there is no input, allowing you to handle other tasks concurrently.
+You said:
 import RPi.GPIO as GPIO
 import time
 import threading
-import sys
-import select
 
 # Define motor control pins
 in1_pin = 12
@@ -50,51 +50,37 @@ right_velocity = 0
 
 # Function to handle motor speed changes
 def change_speed():
-    timeout = 0.001  # Set timeout period in seconds (1ms)
-    global left_velocity, right_velocity
-
     while True:
-        print(f"Enter wheel velocities as 'left right' [-1, 1] (timeout in {timeout} seconds): ", end='', flush=True)
-        
-        # Use select to implement a timeout for input
-        ready, _, _ = select.select([sys.stdin], [], [], timeout)
-        
-        if ready:
-            user_input = sys.stdin.readline().strip()
-            try:
-                left_velocity, right_velocity = map(float, user_input.split())
-                
-                # Control left motor
-                if -1 <= left_velocity <= 0:  # Backward
-                    pwm_IN1.ChangeDutyCycle(0)
-                    pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
-                elif 0 < left_velocity <= 1:  # Forward
-                    pwm_IN1.ChangeDutyCycle(left_velocity * 100)
-                    pwm_IN2.ChangeDutyCycle(0)
-                else:
-                    print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
-                    continue
-                
-                # Control right motor
-                if -1 <= right_velocity <= 0:  # Backward
-                    pwm_IN3.ChangeDutyCycle(0)
-                    pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
-                elif 0 < right_velocity <= 1:  # Forward
-                    pwm_IN3.ChangeDutyCycle(right_velocity * 100)
-                    pwm_IN4.ChangeDutyCycle(0)
-                else:
-                    print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
-                    continue
-
-            except ValueError:
-                print("Invalid input format. Please enter two numeric values separated by a space.")
+        user_input = input("Enter wheel velocities as 'left right' [-1, 1]: ")
+        try:
+            left_velocity, right_velocity = map(float, user_input.split())
+            
+            # Control left motor
+            if -1 <= left_velocity <= 0:  # Backward
+                pwm_IN1.ChangeDutyCycle(0)
+                pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
+            elif 0 < left_velocity <= 1:  # Forward
+                pwm_IN1.ChangeDutyCycle(left_velocity * 100)
+                pwm_IN2.ChangeDutyCycle(0)
+            else:
+                print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
                 continue
-        else:
-            # No input received within the timeout period
-            # Optionally, you can add code here to handle no input case
-            # For example, set default speeds or maintain previous speeds
-            pass
+            
+            # Control right motor
+            if -1 <= right_velocity <= 0:  # Backward
+                pwm_IN3.ChangeDutyCycle(0)
+                pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
+            elif 0 < right_velocity <= 1:  # Forward
+                pwm_IN3.ChangeDutyCycle(right_velocity * 100)
+                pwm_IN4.ChangeDutyCycle(0)
+            else:
+                print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
+                continue
 
+        except ValueError:
+            print("Invalid input format. Please enter two numeric values separated by a space.")
+            continue
+            
 # Start the speed-changing thread
 speed_thread = threading.Thread(target=change_speed)
 speed_thread.daemon = True  # Daemonize thread to exit when the main program exits

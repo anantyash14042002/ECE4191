@@ -119,7 +119,7 @@ try:
             prev_enRB = enRB
             
             # Small delay to avoid excessive CPU usage
-            time.sleep(0.0001)  # 0.1ms delay
+            time.sleep(0.001)  # 1ms delay
         
         # Output encoder readings
         print(f"Left Wheel Count: {distL*2}")

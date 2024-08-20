@@ -1,5 +1,3 @@
-ange_speed function does not block indefinitely if there is no input, allowing you to handle other tasks concurrently.
-You said:
 import RPi.GPIO as GPIO
 import time
 import threading

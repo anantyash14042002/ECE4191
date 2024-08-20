@@ -42,10 +42,6 @@ pwm_IN2.start(0)
 pwm_IN3.start(0)
 pwm_IN4.start(0)
 
-# Initialize velocities
-left_velocity = 0
-right_velocity = 0
-
 # Function to handle motor speed changes
 def change_speed():
     while True:
@@ -78,15 +74,13 @@ def change_speed():
         except ValueError:
             print("Invalid input format. Please enter two numeric values separated by a space.")
             continue
-            
-# Start the speed-changing thread
-speed_thread = threading.Thread(target=change_speed)
-speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
-speed_thread.start()
 
-try:
+        # Sleep to reduce CPU usage
+        time.sleep(0.1)
+
+# Function to handle encoder measurement
+def measure_encoders():
     while True:
-        # Encoder reading and distance calculation
         distL, distR = 0, 0
         prev_enLA = GPIO.input(enLA_pin)
         prev_enLB = GPIO.input(enLB_pin)
@@ -94,7 +88,7 @@ try:
         prev_enRB = GPIO.input(enRB_pin)
         initial_time = time.time()
         
-        while (time.time() - initial_time) < 0.05:  # 50ms loop
+        while (time.time() - initial_time) < 0.1:  # 100ms measurement interval
             enLA = GPIO.input(enLA_pin)
             enLB = GPIO.input(enLB_pin)
             enRA = GPIO.input(enRA_pin)
@@ -124,6 +118,21 @@ try:
         # Output encoder readings
         print(f"Left Wheel Count: {distL*2}")
         print(f"Right Wheel Count: {distR}\n")
+
+# Start the speed-changing thread
+speed_thread = threading.Thread(target=change_speed)
+speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
+speed_thread.start()
+
+# Start the encoder measurement thread
+encoder_thread = threading.Thread(target=measure_encoders)
+encoder_thread.daemon = True  # Daemonize thread to exit when the main program exits
+encoder_thread.start()
+
+try:
+    while True:
+        # Main thread can be used for other tasks or just sleep
+        time.sleep(1)
 
 except KeyboardInterrupt:
     pass

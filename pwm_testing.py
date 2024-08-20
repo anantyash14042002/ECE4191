@@ -70,7 +70,7 @@ try:
             continue
         
         # Encoder reading and distance calculation
-        time.sleep(0.01)
+        time.sleep(0.1)
         distL, distR = 0, 0
         prev_enLA = GPIO.input(enLA_pin)
         prev_enLB = GPIO.input(enLB_pin)

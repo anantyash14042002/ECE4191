@@ -74,7 +74,7 @@ let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
 const interval = 500; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
-let motorControl = [1, 1];
+let motorControl = [1, 1, 0]; //left right tosend
 
 // DOM loaded callback
 document.addEventListener('DOMContentLoaded', initialiseApp);
@@ -189,6 +189,7 @@ function setupMotor() {
 function motorOffOn(){
   motorControl[0] = 1 - motorControl[0];
   motorControl[1] = 1 - motorControl[1];
+  motorControl[2] = 1; // send this command
   console.log(motorControl);
 }
 function handleOrientation(event) {
@@ -252,7 +253,9 @@ function startPeriodicDataSending() {
       sensorData: sensorDataPayload,
       motorControlData: motorDataPayload
     };
+    motorControl[2] = 0; //do not send again
     sendDataToServer(data);
+    
   }, interval);
 }
 

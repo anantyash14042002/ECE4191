@@ -81,7 +81,7 @@ def home():
 def receive_data():
     data = request.json
     motorControlDataRecieved = data.get('motorControlData')
-    print(motorControlDataRecieved)
+    print('motor data : ',motorControlDataRecieved)
     motorControl(motorControlDataRecieved)
     return jsonify({"message": "Data received successfully"})
 

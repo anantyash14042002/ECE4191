@@ -72,7 +72,7 @@ class SensorData {
 // Global variables
 let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
-const interval = 100; // period of sending data back to the server (ms)
+const interval = 500; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
 let motorControl = [1, 1];
 

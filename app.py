@@ -148,7 +148,7 @@ if __name__ == '__main__':
     encoder_thread.start()
 
     try:
-        app.run(host='0.0.0.0', port=6969, ssl_context='adhoc', debug=True)
+        app.run(host='0.0.0.0', port=6969, debug=True) #app.run(host='0.0.0.0', port=6969, ssl_context='adhoc', debug=True)
     except KeyboardInterrupt:
         pass
     finally:

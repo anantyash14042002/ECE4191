@@ -1,6 +1,10 @@
+from flask import Flask, render_template, request, jsonify
 import RPi.GPIO as GPIO
 import time
 import threading
+
+# Initialize Flask app
+app = Flask(__name__)
 
 # Define motor control pins
 in1_pin = 12
@@ -41,6 +45,19 @@ pwm_IN1.start(0)
 pwm_IN2.start(0)
 pwm_IN3.start(0)
 pwm_IN4.start(0)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/api/clientData', methods=['POST'])
+def receive_data():
+    data = request.json
+    sensorDataRecieved = data.get('sensorData')
+    
+    print('Received sensor data:', sensorDataRecieved)
+    
+    return jsonify({"message": "Data received successfully", "sensorData": sensorDataRecieved})
 
 # Function to handle motor speed changes
 def change_speed():
@@ -119,28 +136,25 @@ def measure_encoders():
         print(f"Left Wheel Count: {distL}")
         print(f"Right Wheel Count: {distR}\n")
 
-# Start the speed-changing thread
-speed_thread = threading.Thread(target=change_speed)
-speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
-#speed_thread.start() # uses 79% of cpu
+if __name__ == '__main__':
+    # Start the speed-changing thread
+    # speed_thread = threading.Thread(target=change_speed)
+    # speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
+    # speed_thread.start() # Uncomment this line if you want to start the speed-changing thread
 
-# Start the encoder measurement thread
-encoder_thread = threading.Thread(target=measure_encoders)
-encoder_thread.daemon = True  # Daemonize thread to exit when the main program exits
-encoder_thread.start()
+    # Start the encoder measurement thread
+    encoder_thread = threading.Thread(target=measure_encoders)
+    encoder_thread.daemon = True  # Daemonize thread to exit when the main program exits
+    encoder_thread.start()
 
-try:
-    while True:
-        # Main thread can be used for other tasks or just sleep
-        time.sleep(1)
-
-except KeyboardInterrupt:
-    pass
-
-finally:
-    # Stop PWM and clean up GPIO settings
-    pwm_IN1.stop()
-    pwm_IN2.stop()
-    pwm_IN3.stop()
-    pwm_IN4.stop()
-    GPIO.cleanup()
+    try:
+        app.run(host='0.0.0.0', port=6969, debug=True)  # Removed SSL context for simplicity
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Stop PWM and clean up GPIO settings
+        pwm_IN1.stop()
+        pwm_IN2.stop()
+        pwm_IN3.stop()
+        pwm_IN4.stop()
+        GPIO.cleanup()

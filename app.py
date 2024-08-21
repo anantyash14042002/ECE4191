@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import RPi.GPIO as GPIO
-import threading
+# import threading
 
 # Define motor control pins
 in1_pin = 12
@@ -44,6 +44,8 @@ pwm_IN4.start(0)
 
 # Function to handle motor speed changes
 def motorControl(motorInput):
+    if(motorInput[2] != 1):
+        return
     left_velocity = motorInput[0]
     right_velocity = motorInput[1]
     if -1 <= left_velocity <= 0:  # Backward
@@ -70,7 +72,7 @@ def motorControl(motorInput):
 ## FLASK APP ##
 ###############
 
-# Initialize Flask app
+# Initialise Flask app
 app = Flask(__name__)
 @app.route('/')
 def home():
@@ -81,6 +83,8 @@ def home():
 def receive_data():
     data = request.json
     motorControlDataRecieved = data.get('motorControlData')
+    sensorDataRecieved = data.get('sensorData')
+    print('motor data : ',motorControlDataRecieved)
     print('motor data : ',motorControlDataRecieved)
     motorControl(motorControlDataRecieved)
     return jsonify({"message": "Data received successfully"})

@@ -74,6 +74,7 @@ let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
 const interval = 100; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
+const motorControl;
 
 // DOM loaded callback
 document.addEventListener('DOMContentLoaded', initialiseApp);
@@ -179,7 +180,18 @@ function initialiseSensors() {
     console.error("Sensor APIs not supported", error);
   }
 }
-
+//motor button
+function setupMotor() {
+  const motorBtn = document.getElementById('enableMotors');
+  motorBtn.addEventListener('click', motorOffOn);
+}
+function motorOffOn(){
+  if(motorControl == '0 0'){
+    motorControl = '1 1';
+  }else{
+     motorControl = '0 0';
+  }
+}
 function handleOrientation(event) {
   // Update the orientation data correctly
   sensorData.updateOrientation(event.alpha, event.beta, event.gamma);
@@ -236,7 +248,7 @@ function startPeriodicDataSending() {
   }
   sendDataCheck = setInterval(() => {
     const sensorDataPayload = sensorData.getAllData();
-    const motorControlPayload = '1 1'
+    const motorControlPayload = motorControl;
     const data = {
       sensorData: sensorDataPayload,
       motorControlData: motorControlPayload

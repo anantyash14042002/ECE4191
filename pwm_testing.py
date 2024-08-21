@@ -96,7 +96,7 @@ def measure_encoders():
             
             # Count left encoder transitions
             if enLA != prev_enLA and enLA == GPIO.HIGH:
-                # distL += 1
+                distL += 1 # encoder A hardware does not work
             prev_enLA = enLA
             
             if enLB != prev_enLB and enLB == GPIO.HIGH:
@@ -105,7 +105,7 @@ def measure_encoders():
             
             # Count right encoder transitions
             if enRA != prev_enRA and enRA == GPIO.HIGH:
-                # distR += 1
+                distR += 0
             prev_enRA = enRA
             
             if enRB != prev_enRB and enRB == GPIO.HIGH:
@@ -116,7 +116,7 @@ def measure_encoders():
             time.sleep(0.001)  # 1ms delay
         
         # Output encoder readings
-        print(f"Left Wheel Count: {distL*2}")
+        print(f"Left Wheel Count: {distL}")
         print(f"Right Wheel Count: {distR}\n")
 
 # Start the speed-changing thread

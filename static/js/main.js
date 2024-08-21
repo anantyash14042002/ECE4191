@@ -253,9 +253,8 @@ function startPeriodicDataSending() {
       sensorData: sensorDataPayload,
       motorControlData: motorDataPayload
     };
-    motorControl[2] = 0; //do not send again
     sendDataToServer(data);
-    
+    motorControl[2] = 0; //do not send again
   }, interval);
 }
 

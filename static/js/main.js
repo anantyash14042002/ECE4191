@@ -74,7 +74,7 @@ let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
 const interval = 100; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
-const motorControl;
+const motorControl = '0 0';
 
 // DOM loaded callback
 document.addEventListener('DOMContentLoaded', initialiseApp);

@@ -48,29 +48,29 @@ def motorControl(input):
     #Motor control is a function that is called when the client (phones) sends a command to control the motor speed
     left_velocity, right_velocity = map(float, input.split())
     if -1 <= left_velocity <= 0:  # Backward
-                pwm_IN1.ChangeDutyCycle(0)
-                pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
-            elif 0 < left_velocity <= 1:  # Forward
-                pwm_IN1.ChangeDutyCycle(left_velocity * 100)
-                pwm_IN2.ChangeDutyCycle(0)
-            else:
-                print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
-                continue
-            
-            # Control right motor
-            if -1 <= right_velocity <= 0:  # Backward
-                pwm_IN3.ChangeDutyCycle(0)
-                pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
-            elif 0 < right_velocity <= 1:  # Forward
-                pwm_IN3.ChangeDutyCycle(right_velocity * 100)
-                pwm_IN4.ChangeDutyCycle(0)
-            else:
-                print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
-                continue
-
-        except ValueError:
-            print("Invalid input format. Please enter two numeric values separated by a space.")
+            pwm_IN1.ChangeDutyCycle(0)
+            pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
+        elif 0 < left_velocity <= 1:  # Forward
+            pwm_IN1.ChangeDutyCycle(left_velocity * 100)
+            pwm_IN2.ChangeDutyCycle(0)
+        else:
+            print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
             continue
+        
+        # Control right motor
+        if -1 <= right_velocity <= 0:  # Backward
+            pwm_IN3.ChangeDutyCycle(0)
+            pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
+        elif 0 < right_velocity <= 1:  # Forward
+            pwm_IN3.ChangeDutyCycle(right_velocity * 100)
+            pwm_IN4.ChangeDutyCycle(0)
+        else:
+            print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
+            continue
+        
+        except ValueError:
+        print("Invalid input format. Please enter two numeric values separated by a space.")
+        continue
 
     
 def change_speed():

@@ -200,9 +200,9 @@ function setupMotor() {
   motorBtn.addEventListener('click', motorOffOn);
 }
 function motorOffOn(){
-  motorControl[0] = 1 - motorControl[0];
-  motorControl[1] = 1 - motorControl[1];
-  console.log(motorControl);
+  motorData.left = 1 - motorData.left;
+  motorData.right = 1 - motorData.right;
+  console.log(motorData);
 }
 function handleOrientation(event) {
   // Update the orientation data correctly
@@ -260,9 +260,10 @@ function startPeriodicDataSending() {
   }
   sendDataCheck = setInterval(() => {
     const sensorDataPayload = sensorData.getAllData();
+    const motorDataPayload = motorData.getAllData();
     const data = {
       sensorData: sensorDataPayload,
-      motorControlData: motorControl
+      motorControlData: motorDataPayload
     };
     sendDataToServer(data);
   }, interval);

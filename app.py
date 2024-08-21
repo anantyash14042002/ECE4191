@@ -55,7 +55,7 @@ def motorControl(input):
         pwm_IN2.ChangeDutyCycle(0)
     else:
         print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
-        continue
+        return
         
         # Control right motor
     if -1 <= right_velocity <= 0:  # Backward
@@ -66,7 +66,7 @@ def motorControl(input):
         pwm_IN4.ChangeDutyCycle(0)
     else:
         print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
-        continue
+        return
 
     
 def change_speed():

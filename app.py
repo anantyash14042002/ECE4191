@@ -46,7 +46,7 @@ pwm_IN4.start(0)
 # Function to handle motor speed changes
 def motorControl(input):
     #Motor control is a function that is called when the client (phones) sends a command to control the motor speed
-    left_velocity, right_velocity = map(float, user_input.split())
+    left_velocity, right_velocity = map(float, input.split())
     if -1 <= left_velocity <= 0:  # Backward
                 pwm_IN1.ChangeDutyCycle(0)
                 pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)

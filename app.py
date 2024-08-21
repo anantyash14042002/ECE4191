@@ -3,9 +3,6 @@ import RPi.GPIO as GPIO
 import time
 import threading
 
-# Initialize Flask app
-app = Flask(__name__)
-
 # Define motor control pins
 in1_pin = 12
 in2_pin = 13
@@ -46,19 +43,6 @@ pwm_IN2.start(0)
 pwm_IN3.start(0)
 pwm_IN4.start(0)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/api/clientData', methods=['POST'])
-def receive_data():
-    data = request.json
-    sensorDataRecieved = data.get('sensorData')
-    
-    print('Received sensor data:', sensorDataRecieved)
-    
-    return jsonify({"message": "Data received successfully", "sensorData": sensorDataRecieved})
-
 # Function to handle motor speed changes
 def change_speed():
     while True:
@@ -96,6 +80,7 @@ def change_speed():
         time.sleep(2)
 
 # Function to handle encoder measurement
+measurement_interval = 10 # seconds
 def measure_encoders():
     while True:
         distL, distR = 0, 0
@@ -105,7 +90,7 @@ def measure_encoders():
         prev_enRB = GPIO.input(enRB_pin)
         initial_time = time.time()
         
-        while (time.time() - initial_time) < 0.1:  # 100ms measurement interval
+        while (time.time() - initial_time) < measurement_interval:
             enLA = GPIO.input(enLA_pin)
             enLB = GPIO.input(enLB_pin)
             enRA = GPIO.input(enRA_pin)
@@ -130,12 +115,31 @@ def measure_encoders():
             prev_enRB = enRB
             
             # Small delay to avoid excessive CPU usage
-            time.sleep(0.001)  # 1ms delay
+            time.sleep(0.01)  # 10ms delay
         
         # Output encoder readings
         print(f"Left Wheel Count: {distL}")
         print(f"Right Wheel Count: {distR}\n")
 
+###############
+## FLASK APP ##
+###############
+
+# Initialize Flask app
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/api/clientData', methods=['POST'])
+def receive_data():
+    data = request.json
+    sensorDataRecieved = data.get('sensorData')
+    
+    print('Received sensor data:', sensorDataRecieved)
+    
+    return jsonify({"message": "Data received successfully", "sensorData": sensorDataRecieved})
+    
 if __name__ == '__main__':
     # Start the speed-changing thread
     speed_thread = threading.Thread(target=change_speed)

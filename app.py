@@ -106,7 +106,7 @@ def change_speed():
         time.sleep(2)
 
 # Function to handle encoder measurement
-measurement_interval = 10 # seconds
+measurement_interval = 0.1 # seconds
 def measure_encoders():
     # return the left encoder, right encoder information to esimate the current speed of the wheels
     while True:

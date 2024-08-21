@@ -44,7 +44,37 @@ pwm_IN3.start(0)
 pwm_IN4.start(0)
 
 # Function to handle motor speed changes
+def motorControl(input):
+    #Motor control is a function that is called when the client (phones) sends a command to control the motor speed
+    left_velocity, right_velocity = map(float, user_input.split())
+    if -1 <= left_velocity <= 0:  # Backward
+                pwm_IN1.ChangeDutyCycle(0)
+                pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
+            elif 0 < left_velocity <= 1:  # Forward
+                pwm_IN1.ChangeDutyCycle(left_velocity * 100)
+                pwm_IN2.ChangeDutyCycle(0)
+            else:
+                print("Invalid left wheel velocity. Please enter a value between -1 and 1.")
+                continue
+            
+            # Control right motor
+            if -1 <= right_velocity <= 0:  # Backward
+                pwm_IN3.ChangeDutyCycle(0)
+                pwm_IN4.ChangeDutyCycle(abs(right_velocity) * 100)
+            elif 0 < right_velocity <= 1:  # Forward
+                pwm_IN3.ChangeDutyCycle(right_velocity * 100)
+                pwm_IN4.ChangeDutyCycle(0)
+            else:
+                print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
+                continue
+
+        except ValueError:
+            print("Invalid input format. Please enter two numeric values separated by a space.")
+            continue
+
+    
 def change_speed():
+    # A realtime operation that waits for a user in the form of "X Y" which controls the motor speeds. Runs in a loop large cpu usage.
     while True:
         user_input = input("Enter wheel velocities as 'left right' [-1, 1]: ")
         try:
@@ -82,6 +112,7 @@ def change_speed():
 # Function to handle encoder measurement
 measurement_interval = 10 # seconds
 def measure_encoders():
+    # return the left encoder, right encoder information to esimate the current speed of the wheels
     while True:
         distL, distR = 0, 0
         prev_enLA = GPIO.input(enLA_pin)
@@ -120,6 +151,7 @@ def measure_encoders():
         # Output encoder readings
         print(f"Left Wheel Count: {distL}")
         print(f"Right Wheel Count: {distR}\n")
+        return distL, distR
 
 ###############
 ## FLASK APP ##
@@ -135,15 +167,16 @@ def home():
 def receive_data():
     data = request.json
     sensorDataRecieved = data.get('sensorData')
+    motorControlDataRecieved = data.get('motorControlData')
+    print(motorControlDataRecieved)
+    #print('Received sensor data:', sensorDataRecieved)
     
-    print('Received sensor data:', sensorDataRecieved)
-    
-    return jsonify({"message": "Data received successfully", "sensorData": sensorDataRecieved})
+    #return jsonify({"message": "Data received successfully", "sensorData": sensorDataRecieved})
     
 if __name__ == '__main__':
     # Start the speed-changing thread
-    speed_thread = threading.Thread(target=change_speed)
-    speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
+    #speed_thread = threading.Thread(target=change_speed)
+    #speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
     #speed_thread.start() # uses 79% of cpu
 
     # Start the encoder measurement thread

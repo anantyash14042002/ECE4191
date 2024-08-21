@@ -138,9 +138,9 @@ def measure_encoders():
 
 if __name__ == '__main__':
     # Start the speed-changing thread
-    # speed_thread = threading.Thread(target=change_speed)
-    # speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
-    # speed_thread.start() # Uncomment this line if you want to start the speed-changing thread
+    speed_thread = threading.Thread(target=change_speed)
+    speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
+    speed_thread.start() # Uncomment this line if you want to start the speed-changing thread
 
     # Start the encoder measurement thread
     encoder_thread = threading.Thread(target=measure_encoders)

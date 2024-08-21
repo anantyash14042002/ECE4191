@@ -236,8 +236,10 @@ function startPeriodicDataSending() {
   }
   sendDataCheck = setInterval(() => {
     const sensorDataPayload = sensorData.getAllData();
+    const motorControlPayload = '1 1'
     const data = {
-      sensorData: sensorDataPayload
+      sensorData: sensorDataPayload,
+      motorControlData: motorControlPayload
     };
     sendDataToServer(data);
   }, interval);

@@ -188,11 +188,8 @@ function setupMotor() {
 }
 function motorOffOn(){
   console.log("BUTTON PRESSED");
-  if(motorControl == [0, 0]){
-    motorControl = [1, 1];
-  }else{
-     motorControl = [0, 0];
-  }
+  motorControl[0] = 1 - motorControl[0];
+  motorControl[1] = 1 - motorControl[1];
   console.log(motorControl);
 }
 function handleOrientation(event) {

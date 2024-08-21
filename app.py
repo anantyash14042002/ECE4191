@@ -164,6 +164,7 @@ def receive_data():
     data = request.json
     sensorDataRecieved = data.get('sensorData')
     motorControlDataRecieved = data.get('motorControlData')
+    motorControl(motorControlDataRecieved)
     if(motorControlDataRecieved != None):
         motorControl(motorControlDataRecieved)
     #print('Received sensor data:', sensorDataRecieved)

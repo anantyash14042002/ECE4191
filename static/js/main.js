@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', initialiseApp);
 function initialiseApp() {
   initialiseElements();
   setupSensors();
+  setupMotor();
   setupVideoStream();
 }
 

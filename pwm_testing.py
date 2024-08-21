@@ -96,7 +96,7 @@ def measure_encoders():
             
             # Count left encoder transitions
             if enLA != prev_enLA and enLA == GPIO.HIGH:
-                distL += 1
+                # distL += 1
             prev_enLA = enLA
             
             if enLB != prev_enLB and enLB == GPIO.HIGH:
@@ -105,7 +105,7 @@ def measure_encoders():
             
             # Count right encoder transitions
             if enRA != prev_enRA and enRA == GPIO.HIGH:
-                distR += 1
+                # distR += 1
             prev_enRA = enRA
             
             if enRB != prev_enRB and enRB == GPIO.HIGH:

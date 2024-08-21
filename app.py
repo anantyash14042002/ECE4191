@@ -66,31 +66,6 @@ def motorControl(motorInput):
         print("Invalid right wheel velocity. Please enter a value between -1 and 1.")
         return
 
-# Function to handle encoder measurement
-def measure_encoders():
-    distL, distR = 0, 0
-
-    def encoder_callback(channel):
-        nonlocal distL, distR
-        if channel == enLB_pin:
-            distL += 1
-        elif channel == enRB_pin:
-            distR += 1
-
-    GPIO.add_event_detect(enLB_pin, GPIO.RISING, callback=encoder_callback)
-    GPIO.add_event_detect(enRB_pin, GPIO.RISING, callback=encoder_callback)
-
-    try:
-        while True:
-            # Output encoder readings
-            print(f"Left Wheel Count: {distL}")
-            print(f"Right Wheel Count: {distR}\n")
-            distL, distR = 0, 0
-            threading.Event().wait(1)  # Sleep for 1 second
-    finally:
-        GPIO.remove_event_detect(enLB_pin)
-        GPIO.remove_event_detect(enRB_pin)
-
 ###############
 ## FLASK APP ##
 ###############
@@ -107,15 +82,11 @@ def receive_data():
     data = request.json
     motorControlDataRecieved = data.get('motorControlData')
     if motorControlDataRecieved is not None:
+        print(motorControlDataRecieved)
         motorControl(motorControlDataRecieved)
     return jsonify({"message": "Data received successfully"})
 
 if __name__ == '__main__':
-    # Start the encoder measurement thread
-    #encoder_thread = threading.Thread(target=measure_encoders)
-    #encoder_thread.daemon = True  # Daemonize thread to exit when the main program exits
-    #encoder_thread.start()
-
     try:
         app.run(host='0.0.0.0', port=6969, debug=False)  # Use debug=False for production
     except KeyboardInterrupt:

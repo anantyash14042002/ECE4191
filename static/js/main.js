@@ -250,7 +250,7 @@ function startPeriodicDataSending() {
     const sensorDataPayload = sensorData.getAllData();
     const data = {
       sensorData: sensorDataPayload,
-      motorControlData: motorControl
+      //motorControlData: motorControl
     };
     sendDataToServer(data);
   }, interval);

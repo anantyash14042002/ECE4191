@@ -1,17 +1,5 @@
 'use strict';
 // CLASSES
-class MotorData{
-  constructor(){
-    this.right = 0;
-    this.left = 0;
-  }
-  getAllData() {
-    return {
-      left: this.left,
-      right: this.right
-    };
-}
-  
 class SensorData {
   constructor() {
     this.orientation = {
@@ -86,7 +74,6 @@ let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
 const interval = 500; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
-const motorData = new MotorData();
 let motorControl = [1, 1];
 
 // DOM loaded callback
@@ -200,9 +187,9 @@ function setupMotor() {
   motorBtn.addEventListener('click', motorOffOn);
 }
 function motorOffOn(){
-  motorData.left = 1 - motorData.left;
-  motorData.right = 1 - motorData.right;
-  console.log(motorData);
+  motorControl[0] = 1 - motorControl[0];
+  motorControl[1] = 1 - motorControl[1];
+  console.log(motorControl);
 }
 function handleOrientation(event) {
   // Update the orientation data correctly
@@ -260,7 +247,7 @@ function startPeriodicDataSending() {
   }
   sendDataCheck = setInterval(() => {
     const sensorDataPayload = sensorData.getAllData();
-    const motorDataPayload = motorData.getAllData();
+    const motorDataPayload = motorControl;
     const data = {
       sensorData: sensorDataPayload,
       motorControlData: motorDataPayload

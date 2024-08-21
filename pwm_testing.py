@@ -76,7 +76,7 @@ def change_speed():
             continue
 
         # Sleep to reduce CPU usage
-        #time.sleep(2)
+        time.sleep(2)
 
 # Function to handle encoder measurement
 def measure_encoders():
@@ -122,12 +122,12 @@ def measure_encoders():
 # Start the speed-changing thread
 speed_thread = threading.Thread(target=change_speed)
 speed_thread.daemon = True  # Daemonize thread to exit when the main program exits
-speed_thread.start()
+#speed_thread.start() # uses 79% of cpu
 
 # Start the encoder measurement thread
 encoder_thread = threading.Thread(target=measure_encoders)
 encoder_thread.daemon = True  # Daemonize thread to exit when the main program exits
-#encoder_thread.start()
+encoder_thread.start()
 
 try:
     while True:

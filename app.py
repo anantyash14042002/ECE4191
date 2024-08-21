@@ -75,17 +75,14 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template('index.html')
-prevMotorState = None
+    
 @app.route('/api/clientData', methods=['POST'])
+
 def receive_data():
     data = request.json
     motorControlDataRecieved = data.get('motorControlData')
-    if (motorControlDataRecieved == prevMotorState):
-        print('SAME')
-    if motorControlDataRecieved is not None:
-        print(motorControlDataRecieved)
-        prevMotorState = motorControlDataRecieved
-        motorControl(motorControlDataRecieved)
+    print(motorControlDataRecieved)
+    motorControl(motorControlDataRecieved)
     return jsonify({"message": "Data received successfully"})
 
 if __name__ == '__main__':

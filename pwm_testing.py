@@ -127,7 +127,7 @@ speed_thread.start()
 # Start the encoder measurement thread
 encoder_thread = threading.Thread(target=measure_encoders)
 encoder_thread.daemon = True  # Daemonize thread to exit when the main program exits
-encoder_thread.start()
+#encoder_thread.start()
 
 try:
     while True:

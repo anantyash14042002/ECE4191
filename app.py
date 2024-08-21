@@ -48,8 +48,8 @@ def motorControl(input):
     #Motor control is a function that is called when the client (phones) sends a command to control the motor speed
     left_velocity, right_velocity = map(float, input.split())
     if -1 <= left_velocity <= 0:  # Backward
-            pwm_IN1.ChangeDutyCycle(0)
-            pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
+        pwm_IN1.ChangeDutyCycle(0)
+        pwm_IN2.ChangeDutyCycle(abs(left_velocity) * 100)
     elif 0 < left_velocity <= 1:  # Forward
         pwm_IN1.ChangeDutyCycle(left_velocity * 100)
         pwm_IN2.ChangeDutyCycle(0)
@@ -75,7 +75,6 @@ def change_speed():
         user_input = input("Enter wheel velocities as 'left right' [-1, 1]: ")
         try:
             left_velocity, right_velocity = map(float, user_input.split())
-            
             # Control left motor
             if -1 <= left_velocity <= 0:  # Backward
                 pwm_IN1.ChangeDutyCycle(0)
@@ -164,7 +163,8 @@ def receive_data():
     data = request.json
     sensorDataRecieved = data.get('sensorData')
     motorControlDataRecieved = data.get('motorControlData')
-    print(motorControlDataRecieved)
+    if(motorControlDataRecieved != None):
+        motorControl(motorControlDataRecieved)
     #print('Received sensor data:', sensorDataRecieved)
     
     #return jsonify({"message": "Data received successfully", "sensorData": sensorDataRecieved})

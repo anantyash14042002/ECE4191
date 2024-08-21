@@ -72,7 +72,7 @@ class SensorData {
 // Global variables
 let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
-const interval = 100; // period of sending data back to the server (ms)
+const interval = 2000; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
 let motorControl = [1, 1];
 
@@ -187,7 +187,6 @@ function setupMotor() {
   motorBtn.addEventListener('click', motorOffOn);
 }
 function motorOffOn(){
-  console.log("BUTTON PRESSED");
   motorControl[0] = 1 - motorControl[0];
   motorControl[1] = 1 - motorControl[1];
   console.log(motorControl);
@@ -250,7 +249,7 @@ function startPeriodicDataSending() {
     const sensorDataPayload = sensorData.getAllData();
     const data = {
       sensorData: sensorDataPayload,
-      //motorControlData: motorControl
+      motorControlData: motorControl
     };
     sendDataToServer(data);
   }, interval);

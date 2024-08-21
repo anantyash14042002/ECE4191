@@ -74,7 +74,7 @@ let video, videoSelect, canvas, context, frameData, videoStream;
 let sendDataCheck; // stops client sending same data to server multiple times
 const interval = 100; // period of sending data back to the server (ms)
 const sensorData = new SensorData();
-const motorControl = '0 0';
+let motorControl = [1, 1];
 
 // DOM loaded callback
 document.addEventListener('DOMContentLoaded', initialiseApp);
@@ -187,10 +187,11 @@ function setupMotor() {
   motorBtn.addEventListener('click', motorOffOn);
 }
 function motorOffOn(){
-  if(motorControl == '0 0'){
-    motorControl = '1 1';
+  console.log("BUTTON PRESSED");
+  if(motorControl == [0, 0]){
+    motorControl = [1, 1];
   }else{
-     motorControl = '0 0';
+     motorControl = [0, 0];
   }
 }
 function handleOrientation(event) {

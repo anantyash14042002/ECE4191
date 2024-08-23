@@ -91,7 +91,7 @@ def receive_data():
 
 if __name__ == '__main__':
     try:
-        app.run(host='0.0.0.0', port=6969, debug=False)  # Use debug=False for production
+        app.run(host='0.0.0.0', port=6969, debug=False, ssl_context('https.crt','https.key'))  # Use debug=False for production
     except KeyboardInterrupt:
         pass
     finally:

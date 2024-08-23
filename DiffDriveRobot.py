@@ -38,6 +38,10 @@ class DiffDriveRobot:
         self.th = self.th + w*self.dt
         
         return self.x, self.y, self.th
+    
+    # Return the current pose of robot
+    def pose(self):
+        return [self.x, self.y, self.th]
 
 
 # Implement a PI controller 

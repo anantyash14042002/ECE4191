@@ -89,9 +89,10 @@ def receive_data():
     motorControl(motorControlDataRecieved)
     return jsonify({"message": "Data received successfully"})
 
+context = ssl_context=('https.crt','https.key')
 if __name__ == '__main__':
     try:
-        app.run(host='0.0.0.0', port=6969, debug=False, ssl_context('https.crt','https.key'))  # Use debug=False for production
+        app.run(host='0.0.0.0', port=6969, context, debug=False)  # Use debug=False for production
     except KeyboardInterrupt:
         pass
     finally:

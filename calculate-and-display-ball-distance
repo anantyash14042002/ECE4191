@@ -1,0 +1,146 @@
+import cv2
+import numpy as np
+
+# Constants
+FRAME_WIDTH = 320
+FRAME_HEIGHT = 240
+MAX_NUM_OBJECTS = 5
+MIN_OBJECT_AREA = 4
+MAX_OBJECT_AREA = FRAME_HEIGHT * FRAME_WIDTH / 1.2
+
+fov_degrees = 59  # Field of view in degrees
+actual_radius = 3.35  # Actual radius of the tennis ball in cm
+
+# Trackbar names and initial values
+trackbar_values = {
+    'H_MIN': 20,
+    'H_MAX': 100,
+    'S_MIN': 50,
+    'S_MAX': 255,
+    'V_MIN': 65,
+    'V_MAX': 255
+}
+trackbar_window_name = "Trackbars"
+
+def nothing(x):
+    pass
+
+def create_trackbars():
+    cv2.namedWindow(trackbar_window_name)
+    for trackbar, initial_value in trackbar_values.items():
+        cv2.createTrackbar(trackbar, trackbar_window_name, initial_value, 256, nothing)
+
+def draw_objects(contours, frame):
+    # Store Radii of Moments
+    radii = []
+    for contour in contours:
+        # Calculate moments for each contour
+        moment = cv2.moments(contour)
+        area = moment['m00']
+
+        if MIN_OBJECT_AREA < area < MAX_OBJECT_AREA:
+            # Calculate the center of the object
+            x = int(moment['m10'] / area)
+            y = int(moment['m01'] / area)
+
+            # Fit an ellipse to the contour if possible
+            if len(contour) >= 5:  # Need at least 5 points to fit an ellipse
+                ellipse = cv2.fitEllipse(contour)
+                center, axes, angle = ellipse
+                radius = min(axes) / 2 # Use the major axis length as the radius
+                radii.append(radius) # Append to list to find max
+
+                # Draw a circle around the detected object
+                cv2.circle(frame, (int(center[0]), int(center[1])), int(radius), (0, 255, 0), 2)
+
+                # Draw crosshairs
+                cv2.line(frame, (int(center[0]), int(center[1])), (int(center[0]), max(int(center[1]) - 25, 0)), (0, 255, 0), 2)
+                cv2.line(frame, (int(center[0]), int(center[1])), (int(center[0]), min(int(center[1]) + 25, FRAME_HEIGHT)), (0, 255, 0), 2)
+                cv2.line(frame, (int(center[0]), int(center[1])), (max(int(center[0]) - 25, 0), int(center[1])), (0, 255, 0), 2)
+                cv2.line(frame, (int(center[0]), int(center[1])), (min(int(center[0]) + 25, FRAME_WIDTH), int(center[1])), (0, 255, 0), 2)
+                
+                # Display coordinates and Radius
+                #cv2.putText(frame, f"{int(center[0])},{int(center[1])},{int(radius)}", (int(center[0]), int(center[1]) + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            
+                # Display Derived Distance to ball
+                dist = calc_dist_to_ball(fov_degrees, FRAME_WIDTH, actual_radius, radius)
+                cv2.putText(frame, f"{int(dist)}", (int(center[0]), int(center[1]) + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                # Flag if Largest Ball is Centered
+                if radius == max(radii):
+                    if int(center[0]) >= 154 and int(center[0]) <= 164:
+                        cv2.putText(frame, "Largest Ball is Centered", (0,240), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 1)
+                    else:
+                        cv2.putText(frame, "Largest Ball Not Centered", (0,240), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
+
+def morph_ops(thresh):
+    erode_element = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    dilate_element = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
+    thresh = cv2.erode(thresh, erode_element, iterations=2)
+    thresh = cv2.dilate(thresh, dilate_element, iterations=2)
+    return thresh
+
+def track_filtered_objects(threshold, frame):
+    temp = threshold.copy()
+    contours, _ = cv2.findContours(temp, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+
+    if contours:
+        num_objects = len(contours)
+        if num_objects < MAX_NUM_OBJECTS:
+            draw_objects(contours, frame)
+        else:
+            cv2.putText(frame, "TOO MUCH NOISE! ADJUST FILTER", (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+def calc_dist_to_ball(fov_degrees, resolution_width, actual_radius, observed_radius_pixels):
+    # Convert FOV from degrees to radians
+    fov_radians = np.radians(fov_degrees)
+    
+    # Calculate the angular resolution per pixel
+    angular_resolution_per_pixel = fov_radians / resolution_width
+    
+    # Calculate the apparent angle of the ball
+    apparent_angle = observed_radius_pixels * angular_resolution_per_pixel
+    
+    # Calculate the distance to the ball using small angle approximation
+    distance_to_ball = actual_radius / apparent_angle
+    
+    return distance_to_ball
+
+def main():
+    create_trackbars()
+    capture = cv2.VideoCapture(1)
+
+    if not capture.isOpened():
+        print("Error: Could not open video capture")
+        return
+
+    capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+    capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+
+    while True:
+        ret, frame = capture.read()
+        if not ret:
+            print("Error: Empty frame captured")
+            break
+
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        
+        hsv_values = {key: cv2.getTrackbarPos(key, trackbar_window_name) for key in trackbar_values}
+        threshold = cv2.inRange(hsv, (hsv_values['H_MIN'], hsv_values['S_MIN'], hsv_values['V_MIN']),
+                                         (hsv_values['H_MAX'], hsv_values['S_MAX'], hsv_values['V_MAX']))
+
+        threshold = morph_ops(threshold)
+
+        track_filtered_objects(threshold, frame)
+
+        cv2.imshow("Thresholded Image", threshold)
+        cv2.imshow("Original Image", frame)
+        cv2.imshow("HSV Image", hsv)
+
+        if cv2.waitKey(30) & 0xFF == ord('q'):
+            break
+
+    capture.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
